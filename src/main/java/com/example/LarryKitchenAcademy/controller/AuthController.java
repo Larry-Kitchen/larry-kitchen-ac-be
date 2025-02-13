@@ -1,7 +1,6 @@
 package com.example.LarryKitchenAcademy.controller;
 
 import com.example.LarryKitchenAcademy.dto.LoginDto;
-import com.example.LarryKitchenAcademy.dto.RegisterRequest;
 import com.example.LarryKitchenAcademy.service.AuthService;
 import com.example.LarryKitchenAcademy.utils.AuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
     @Autowired

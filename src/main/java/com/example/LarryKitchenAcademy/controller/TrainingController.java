@@ -1,21 +1,15 @@
 package com.example.LarryKitchenAcademy.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.LarryKitchenAcademy.dto.DashboardDto;
 import com.example.LarryKitchenAcademy.dto.RequestTrainingDto;
 import com.example.LarryKitchenAcademy.dto.RespondRequestDto;
 import com.example.LarryKitchenAcademy.service.TrainingService;
 import com.example.LarryKitchenAcademy.utils.ApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/training")

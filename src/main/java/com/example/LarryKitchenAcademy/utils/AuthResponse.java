@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuthResponse {
     private String message;
-    UserDto userDto;
+    UserDto data;
     private String token;
 }
