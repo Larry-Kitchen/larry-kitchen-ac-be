@@ -1,4 +1,5 @@
 package com.example.LarryKitchenAcademy.service;
+
 import com.example.LarryKitchenAcademy.dto.DashboardDto;
 import com.example.LarryKitchenAcademy.dto.RequestTrainingDto;
 import com.example.LarryKitchenAcademy.dto.RespondRequestDto;
@@ -6,43 +7,48 @@ import com.example.LarryKitchenAcademy.entity.Training;
 import com.example.LarryKitchenAcademy.repository.TrainingRepository;
 import com.example.LarryKitchenAcademy.utils.ApiResponse;
 import com.example.LarryKitchenAcademy.utils.TrainingStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class TrainingService {
     @Autowired
     private TrainingRepository trainingRepository;
-    
-    public List<DashboardDto> getTrainingList(){
-        List<Object[]> trainingList = trainingRepository.findAllTrainingWithTeacherName();
-        List<DashboardDto> dashboardDtos = new ArrayList<>();
 
-        for (Object[] training : trainingList) {
-            DashboardDto dto = new DashboardDto();
-            dto.setTrainingId(((Training) training[0]).getTrainingId()); 
-            dto.setTrainingName(((Training) training[0]).getTrainingName());
-            dto.setTrainingDesc(((Training) training[0]).getTrainingDesc());
-            dto.setTrainingCapacity(((Training) training[0]).getTrainingCapacity());
-            dto.setTrainingClass(((Training) training[0]).getTrainingClass());
-            dto.setTrainingTeacherId(((Training) training[0]).getTrainingTeacherId());
-            dto.setTrainingStatus(((Training) training[0]).getTrainingStatus()); 
-            dto.setTrainingDate(((Training) training[0]).getTrainingDate());
-            dto.setTrainingTeacherName((String) training[1]);
-    
-            dashboardDtos.add(dto);
-    
+    public ApiResponse<List<DashboardDto>> getTrainingList(){
+        try{
+            List<Object[]> trainingList = trainingRepository.findAllTrainingWithTeacherName();
+            List<DashboardDto> dashboardDtos = new ArrayList<>();
+
+            for (Object[] training : trainingList) {
+                DashboardDto dto = new DashboardDto();
+                dto.setTrainingId(((Training) training[0]).getTrainingId());
+                dto.setTrainingName(((Training) training[0]).getTrainingName());
+                dto.setTrainingDesc(((Training) training[0]).getTrainingDesc());
+                dto.setTrainingCapacity(((Training) training[0]).getTrainingCapacity());
+                dto.setTrainingClass(((Training) training[0]).getTrainingClass());
+                dto.setTrainingTeacherId(((Training) training[0]).getTrainingTeacherId());
+                dto.setTrainingStatus(((Training) training[0]).getTrainingStatus());
+                dto.setTrainingDate(((Training) training[0]).getTrainingDate());
+                dto.setTrainingTeacherName((String) training[1]);
+                dashboardDtos.add(dto);
+            }
+
+            return ApiResponse.<List<DashboardDto>>builder()
+                    .message("Training list fetched successfully")
+                    .data(dashboardDtos)
+                    .build();
+        }catch (Exception e){
+            return ApiResponse.<List<DashboardDto>>builder()
+                    .message("Failed to fetch training list: " + e.getMessage())
+                    .build();
         }
-
-        return dashboardDtos;
     }
 
     public ApiResponse<String> requestTraining(RequestTrainingDto input) {
@@ -88,16 +94,16 @@ public class TrainingService {
 
             trainingRepository.save(training);
 
-            return new ApiResponse<String>("Training class created successfully", null);
+            return new ApiResponse<>("Training class created successfully", null);
         } catch (Exception e) {
-            return new ApiResponse<String>("Error creating training class : " + e.getMessage(), null);
+            return new ApiResponse<>("Error creating training class : " + e.getMessage(), null);
         }
     }
 
     public ApiResponse<String> respondRequest(RespondRequestDto input){
         Optional<Training> trainingTemp = trainingRepository.findById(input.getTrainingId());
-        if(!trainingTemp.isPresent()) {
-            return new ApiResponse<String>("Error data is not found", null);
+        if(!trainingTemp.isEmpty()) {
+            return new ApiResponse<>("Error data is not found", null);
         }
         Training training = trainingTemp.get();
         String status = null;
@@ -113,7 +119,7 @@ public class TrainingService {
                 status = "CANCELLED";
                 break;
             default:
-                return new ApiResponse<String>("Error invalid respond", null);
+                return new ApiResponse<>("Error invalid respond", null);
         }
 
         TrainingStatus trainingStatus = TrainingStatus.valueOf(status.toUpperCase());
@@ -121,9 +127,9 @@ public class TrainingService {
             training.setTrainingStatus(trainingStatus);
             trainingRepository.save(training);
 
-            return new ApiResponse<String>("Training class status updated successfully!", null);
+            return new ApiResponse<>("Training class status updated successfully!", null);
         } catch (Exception e) {
-            return new ApiResponse<String>("Error updating training class status : " + e.getMessage(), null);
+            return new ApiResponse<>("Error updating training class status : " + e.getMessage(), null);
         }
     }
 }

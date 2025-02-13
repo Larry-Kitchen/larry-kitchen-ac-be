@@ -6,6 +6,8 @@ import com.example.LarryKitchenAcademy.repository.EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class EnrollmentService {
 
@@ -16,22 +18,18 @@ public class EnrollmentService {
         if(repository.findEnrollmentByEnrollmentId(enrollment.getEnrollmentId()).isPresent()){
             throw new RuntimeException("Data already exists");
         }
-
-        Enrollment result = repository.save(Enrollment.builder()
-                        .trainingId(enrollment.getTrainingId())
-                        .enrollmentStatus(enrollment.getEnrollmentStatus())
-                        .userId(enrollment.getUserId())
-                        .enrollmentId(enrollment.getEnrollmentId())
-                        .enrollmentDate(enrollment.getEnrollmentDate())
-                        .build());
-        return result;
-//        return EnrollmentDto.builder()
-//                .userId(result.getUserId())
-//                .enrollmentId(result.getEnrollmentId())
-//                .enrollmentStatus(result.getEnrollmentStatus())
-//                .trainingId(result.getTrainingId())
-//                .enrollmentDate(result.getEnrollmentDate())
-//                .build();
+        Enrollment request =  Enrollment.builder()
+                .userId(enrollment.getUserId())
+                .enrollmentId(enrollment.getEnrollmentId())
+                .enrollmentStatus(enrollment.getEnrollmentStatus())
+                .enrollmentDate(enrollment.getEnrollmentDate())
+                .build();
+        return repository.save(request);
     }
+
+    public Enrollment findEnrollmentByEnrollmentIdAndUserId(int enrollmentId, int user_id){
+        return  repository.findEnrollmentByEnrollmentIdAndUserId(enrollmentId, user_id);
+    }
+
 
 }

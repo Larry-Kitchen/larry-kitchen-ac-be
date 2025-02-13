@@ -17,11 +17,10 @@ import java.util.List;
 public class TrainingController {
     @Autowired
     private TrainingService trainingService;
+    
     @GetMapping("/training-list")
     public ResponseEntity<ApiResponse<List<DashboardDto>>> getTrainingList(){
-        List<DashboardDto> data = trainingService.getTrainingList();
-        ApiResponse<List<DashboardDto>> response = new ApiResponse<>("Data Training retrieved successfully!",data);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(trainingService.getTrainingList());
     }
 
     @PostMapping("/request-training")

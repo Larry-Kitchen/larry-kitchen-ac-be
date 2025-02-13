@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment,Integer>{
-    public Optional<Enrollment> findEnrollmentByEnrollmentId(int enrollmentId);
-//    EnrollmentDto saveEnrollment(Enrollment enrollmentDto);
+    Optional<Enrollment> findEnrollmentByEnrollmentId(int enrollmentId);
+    Enrollment findEnrollmentByEnrollmentIdAndUserId(int enrollmentId, int user_id);
 }
