@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class TrainingService {
@@ -22,21 +23,23 @@ public class TrainingService {
     private TrainingRepository trainingRepository;
     
     public List<DashboardDto> getTrainingList(){
-        List<Training> trainingList = trainingRepository.findAll();
+        List<Object[]> trainingList = trainingRepository.findAllTrainingWithTeacherName();
         List<DashboardDto> dashboardDtos = new ArrayList<>();
 
-        for (Training training : trainingList) {
+        for (Object[] training : trainingList) {
             DashboardDto dto = new DashboardDto();
-            dto.setTrainingId(training.getTrainingId());
-            dto.setTrainingName(training.getTrainingName());
-            dto.setTrainingDesc(training.getTrainingDesc());
-            dto.setTrainingCapacity(training.getTrainingCapacity());
-            dto.setTrainingClass(training.getTrainingClass());
-            dto.setTrainingTeacherId(training.getTrainingTeacherId());
-            dto.setTrainingStatus(training.getTrainingStatus());
-            dto.setTrainingDate(training.getTrainingDate());
-
+            dto.setTrainingId(((Training) training[0]).getTrainingId()); 
+            dto.setTrainingName(((Training) training[0]).getTrainingName());
+            dto.setTrainingDesc(((Training) training[0]).getTrainingDesc());
+            dto.setTrainingCapacity(((Training) training[0]).getTrainingCapacity());
+            dto.setTrainingClass(((Training) training[0]).getTrainingClass());
+            dto.setTrainingTeacherId(((Training) training[0]).getTrainingTeacherId());
+            dto.setTrainingStatus(((Training) training[0]).getTrainingStatus()); 
+            dto.setTrainingDate(((Training) training[0]).getTrainingDate());
+            dto.setTrainingTeacherName((String) training[1]);
+    
             dashboardDtos.add(dto);
+    
         }
 
         return dashboardDtos;
@@ -47,6 +50,33 @@ public class TrainingService {
         try{
             Date date = new Date();
             Training training = new Training();
+            // 1️⃣ **Validate required fields**
+            if (input == null) {
+                return new ApiResponse<>("Invalid request: Input cannot be null", null);
+            }
+            if (!StringUtils.hasText(input.getTrainingName())) {
+                return new ApiResponse<>("Training name is required", null);
+            }
+            if (!StringUtils.hasText(input.getTrainingClass())) {
+                return new ApiResponse<>("Training class is required", null);
+            }
+            if (input.getTrainingCapacity() <= 0) {
+                return new ApiResponse<>("Training capacity must be greater than 0", null);
+            }
+            if (input.getTrainingDate() == null) {
+                return new ApiResponse<>("Training date is required", null);
+            }
+
+            // 2️⃣ **Check if the training date is in the future**
+            if (input.getTrainingDate().before(new Date())) {
+                return new ApiResponse<>("Training date must be in the future", null);
+            }
+
+            // 3️⃣ **Check if the teacher (user) exists**
+            // Optional<User> teacher = userRepository.findById(input.getUserId());
+            // if (teacher.isEmpty()) {
+            //     return new ApiResponse<>("Invalid user ID: Teacher does not exist", null);
+            // }
             training.setTrainingTeacherId(input.getUserId());
             training.setTrainingName(input.getTrainingName());
             training.setTrainingDesc(input.getTrainingDesc());

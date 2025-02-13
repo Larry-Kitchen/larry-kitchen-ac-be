@@ -17,4 +17,5 @@ public class DashboardDto {
     private TrainingStatus trainingStatus;
     private int trainingTeacherId;
     private Date trainingDate;
+    private String trainingTeacherName;
 }
