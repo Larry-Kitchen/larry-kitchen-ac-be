@@ -1,6 +1,5 @@
 package com.example.LarryKitchenAcademy.config;
 
-import com.example.LarryKitchenAcademy.service.AuthService;
 import com.example.LarryKitchenAcademy.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,8 +27,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("JWT Filter executed: " + request.getRequestURI()); // Debugging log
-
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;

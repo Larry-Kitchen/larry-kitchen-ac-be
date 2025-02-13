@@ -36,26 +36,6 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
-    public AuthResponse register(RegisterRequest request){
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        var user = User
-                .builder()
-                .username(request.getUsername())
-                .password(request.getPassword())
-                .role(UserRole.MANAGER)
-                .createDate(date)
-                .build();
-        repository.save(user);
-
-        var jwtToken = jwtService.generateToken(user);
-        return AuthResponse
-                .builder()
-                .token(jwtToken)
-                .build();
-    }
-
     public AuthResponse authenticate(LoginDto request){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -65,7 +45,6 @@ public class AuthService {
         if(authentication.isAuthenticated()){
             var user = repository.findByUsername(request.getUsername()).orElseThrow();
             var jwtToken = jwtService.generateToken(user);
-
 
             var userDto = new UserDto();
             userDto.setUserId(user.getId());

@@ -9,16 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("api/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
     @Autowired
     private AuthService service;
-
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
-        return ResponseEntity.ok(service.register(request));
-    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticate(@RequestBody LoginDto request){
