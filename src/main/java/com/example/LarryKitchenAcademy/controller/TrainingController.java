@@ -30,7 +30,7 @@ public class TrainingController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/respond-request")
+    @PutMapping("/respond-request")
     public ResponseEntity<ApiResponse<String>> respondTraining(@RequestBody RespondRequestDto respondRequest){
         ApiResponse<String> response = trainingService.respondRequest(respondRequest);
         return ResponseEntity.ok(response);

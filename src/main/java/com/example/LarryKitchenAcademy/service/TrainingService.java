@@ -8,6 +8,7 @@ import com.example.LarryKitchenAcademy.utils.ApiResponse;
 import com.example.LarryKitchenAcademy.utils.TrainingStatus;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class TrainingService {
     public ApiResponse<String> requestTraining(RequestTrainingDto input) {
 
         try{
+            Date date = new Date();
             Training training = new Training();
             training.setTrainingTeacherId(input.getUserId());
             training.setTrainingName(input.getTrainingName());
@@ -51,6 +53,8 @@ public class TrainingService {
             training.setTrainingCapacity(input.getTrainingCapacity());
             training.setTrainingClass(input.getTrainingClass());
             training.setTrainingDate(input.getTrainingDate());
+            training.setTrainingStatus(TrainingStatus.PENDING);
+            training.setTrainingCreateDate(date);
 
             trainingRepository.save(training);
 
@@ -79,7 +83,7 @@ public class TrainingService {
                 status = "CANCELLED";
                 break;
             default:
-                break;
+                return new ApiResponse<String>("Error invalid respond", null);
         }
 
         TrainingStatus trainingStatus = TrainingStatus.valueOf(status.toUpperCase());
